@@ -1,5 +1,7 @@
 package com.kara.productserver.dto;
 
+import com.kara.productserver.entity.Category;
+
 public class ProductDto {
     /*{
         "id": "uuid",

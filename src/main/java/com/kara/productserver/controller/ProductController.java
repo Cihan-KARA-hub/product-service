@@ -1,16 +1,23 @@
 package com.kara.productserver.controller;
 
 import com.kara.productserver.dto.ProductDto;
+import com.kara.productserver.entity.Product;
+import com.kara.productserver.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
 
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
+    private final ProductService productService;
 
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     //GET /api/v1/products - Sayfalandırmalı tüm ürünleri al
     @GetMapping()
@@ -30,9 +37,8 @@ public class ProductController {
     //POST /api/v1/products - Yeni bir ürün oluşturun
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody ProductDto dto) {
-
-        return;
+    public void createProduct(@RequestBody Product dto) {
+        productService.createProduct(dto);
     }
 
     //DELETE /api/v1/products/{id} - Bir ürünü sil (yumuşak silme tercih edilir)
@@ -41,6 +47,12 @@ public class ProductController {
     public void deleteProduct(@PathVariable int id) {
 
         return;
+    }
+
+    @PostMapping("/add-category/{name}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void  createCategory(@PathVariable String name){
+        productService.addCategory(name);
     }
 }
 //
