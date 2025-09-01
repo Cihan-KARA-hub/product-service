@@ -1,13 +1,16 @@
 package com.kara.productserver.controller;
 
-import com.kara.productserver.dto.ProductDto;
+
+import com.kara.productserver.dto.ProductGetDto;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.service.ProductService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
+import java.util.List;
 
 
 @RestController
@@ -22,15 +25,20 @@ public class ProductController {
     //GET /api/v1/products - Sayfalandırmalı tüm ürünleri al
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public Page<ProductDto> getPageProduct(Pageable pageable) {
+    public Page<ProductGetDto> getPageProduct(Pageable pageable) {
         return null;
+
+    }   @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductGetDto> getFindAll() {
+        return productService.getProducts();
 
     }
 
     //GET /api/v1/products/{id} - Kimliğe göre belirli bir ürünü al
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDto getProduct(@PathVariable int id) {
+    public ProductGetDto getProduct(@PathVariable int id) {
         return null;
     }
 

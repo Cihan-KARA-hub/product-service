@@ -1,22 +1,31 @@
 package com.kara.productserver.service;
 
+import com.kara.productserver.dto.ProductGetDto;
 import com.kara.productserver.entity.Category;
 import com.kara.productserver.entity.Product;
+import com.kara.productserver.mapper.GetProductMapper;
 import com.kara.productserver.repository.CategoryRepository;
 import com.kara.productserver.repository.ProductRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import static com.kara.productserver.mapper.GetProductMapper.map;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final GetProductMapper getProductMapper;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, GetProductMapper getProductMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.getProductMapper = getProductMapper;
     }
 
     @Override
@@ -32,6 +41,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct() {
 
+    }
+
+    @Override
+    @Transactional
+    public List<ProductGetDto> getProducts() {
+      List<Product>  product =   productRepository.findAll();
+      List<ProductGetDto> productGetDtos = new ArrayList<>();
+      for (Product p : product) {
+          productGetDtos.add(map(p));
+      }
+      return productGetDtos;
     }
 
     @Override

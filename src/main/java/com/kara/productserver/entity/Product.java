@@ -1,9 +1,9 @@
 package com.kara.productserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kara.productserver.entity.enumble.Status;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
@@ -21,15 +21,15 @@ public class Product {
     private String description;
     @Column(precision = 19, scale = 2)
     private BigDecimal price;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category categoryId;
     private String sku;
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private Inventory inventory;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "metadata_id")
     private Metadata metadata;
     @CreationTimestamp

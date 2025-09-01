@@ -17,11 +17,12 @@ public class Metadata {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private BigDecimal weight;
-    @ElementCollection
+
     @CollectionTable(
             name = "product_tags",
             joinColumns = @JoinColumn(name = "product_id")
     )
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "tag")
     private List<String> tags;
     @Embedded
