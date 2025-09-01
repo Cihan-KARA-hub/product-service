@@ -17,4 +17,6 @@ public interface ProductService {
     void addCategory(String name);
 
     Page<ProductGetDto> getPageProducts(Pageable pageable);
+
+    ProductGetDto findById(UUID id);
 }
