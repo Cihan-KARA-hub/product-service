@@ -7,6 +7,8 @@ import com.kara.productserver.mapper.GetProductMapper;
 import com.kara.productserver.repository.CategoryRepository;
 import com.kara.productserver.repository.ProductRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,4 +62,15 @@ public class ProductServiceImpl implements ProductService {
         category.setName(name);
         categoryRepository.save(category);
     }
+
+    @Override
+    @Transactional
+    public Page<ProductGetDto> getPageProducts(Pageable pageable) {
+        Page<Product> entityPage = productRepository.findAllProducts(pageable);
+        Page<ProductGetDto> dtoPage = entityPage.map(GetProductMapper::map);
+        return dtoPage;
+
+    }
+
+
 }

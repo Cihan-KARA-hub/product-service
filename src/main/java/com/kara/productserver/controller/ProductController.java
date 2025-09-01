@@ -5,11 +5,12 @@ import com.kara.productserver.dto.ProductGetDto;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.service.ProductService;
 
-import org.springframework.data.domain.Page;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
@@ -25,10 +26,14 @@ public class ProductController {
     //GET /api/v1/products - Sayfalandırmalı tüm ürünleri al
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public Page<ProductGetDto> getPageProduct(Pageable pageable) {
-        return null;
+    public Page<ProductGetDto> getPageProduct(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productService.getPageProducts(pageable);
 
-    }   @GetMapping("/all")
+    }
+
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductGetDto> getFindAll() {
         return productService.getProducts();
@@ -59,7 +64,7 @@ public class ProductController {
 
     @PostMapping("/add-category/{name}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void  createCategory(@PathVariable String name){
+    public void createCategory(@PathVariable String name) {
         productService.addCategory(name);
     }
 }

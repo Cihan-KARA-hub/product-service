@@ -29,7 +29,7 @@ public class Product {
     private Status status = Status.ACTIVE;
     @OneToOne(cascade = CascadeType.ALL,orphanRemoval = true)
     private Inventory inventory;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "metadata_id")
     private Metadata metadata;
     @CreationTimestamp

@@ -7,7 +7,6 @@ import java.util.List;
 
 @Entity
 public class Metadata {
-
     /*
     "weight": "decimal",
     "dimensions": "object",
@@ -17,7 +16,6 @@ public class Metadata {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private BigDecimal weight;
-
     @CollectionTable(
             name = "product_tags",
             joinColumns = @JoinColumn(name = "product_id")
@@ -27,8 +25,17 @@ public class Metadata {
     private List<String> tags;
     @Embedded
     private Dimensions dimensions;
-
     public Metadata() {
+    }
+
+    @Override
+    public String toString() {
+        return "Metadata{" +
+                "id=" + id +
+                ", weight=" + weight +
+                ", tags=" + tags +
+                ", dimensions=" + dimensions +
+                '}';
     }
 
     public BigDecimal getWeight() {
