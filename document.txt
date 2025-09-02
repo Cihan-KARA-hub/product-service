@@ -1,0 +1,47 @@
+# debezium creat connector endpoint
+
+{
+  "name": "product-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+"database.history.kafka.bootstrap.servers": "kafka:9092",    "database.history.kafka.topic":"schema-changes.movies",
+    "database.hostname": "db-product",
+    "database.port": "5432",
+    "database.user": "admin",
+    "database.password": "secret",
+    "database.dbname": "product",
+    "topic.prefix":"product",
+    "heartbeat.interval.ms":"5000",
+    "key.converter":"org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable":false,
+     "value.converter":"org.apache.kafka.connect.json.JsonConverter",
+     "value.converter.schemas.enable":false,
+
+    "database.server.name": "productserver",
+    "schema.include.list": "public",
+    "table.include.list": "public.product",
+    "plugin.name": "pgoutput",
+    "slot.name": "product_slot",
+    "publication.name": "product_pub",
+    "tombstones.on.delete": "false"
+  }
+}
+
+http://localhost:8083/connectors/product-connector/status
+
+{
+    "name": "product-connector",
+    "connector": {
+        "state": "RUNNING",
+        "worker_id": "172.20.0.3:8083"
+    },
+    "tasks": [
+        {
+            "id": 0,
+            "state": "RUNNING",
+            "worker_id": "172.20.0.3:8083"
+        }
+    ],
+    "type": "source"
+}

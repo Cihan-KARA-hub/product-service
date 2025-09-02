@@ -58,9 +58,9 @@ services:
     image: quay.io/cloudhut/kowl:master
     restart: always
     environment:
-      KAFKA_BROKERS: "PLAINTEXT://kafka:9092"
+      KAFKA_BROKERS: kafka:9092
     ports:
-      - "8090:8090"
+      - "8090:8080"
     depends_on:
       - kafka
     networks:
