@@ -1,15 +1,19 @@
 package com.kara.elasticsearchserver.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Document(indexName = "product")
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ElasticSearchProduct {
     @Id
     @Field("id")

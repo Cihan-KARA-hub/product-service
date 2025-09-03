@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories(basePackages = "com.kara.elasticsearchserver.elasticsearch")
 @ComponentScan(basePackages ="com.kara.elasticsearchserver" )
 public class ElasticsearchConfig extends ElasticsearchConfiguration {
-    @Value("${elasticsearch.url}")
+    @Value("${spring.elasticsearch.uris}")
     private String elasticsearchUrl;
     @Override
     public ClientConfiguration clientConfiguration() {
