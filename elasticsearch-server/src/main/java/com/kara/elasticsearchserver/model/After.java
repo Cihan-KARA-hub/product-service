@@ -2,6 +2,8 @@ package com.kara.elasticsearchserver.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
