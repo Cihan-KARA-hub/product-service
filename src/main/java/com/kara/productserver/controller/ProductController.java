@@ -71,9 +71,6 @@ public class ProductController {
 //PUT /api/v1/products/{id} - Mevcut bir ürünü güncelle
 //
 
-//
-//GET /api/v1/products/search - Ürünleri filtrelerle arayın elestichsearch
-//
 //PATCH /api/v1/products/{id}/inventories - Envanter seviyelerini güncelle
 
 

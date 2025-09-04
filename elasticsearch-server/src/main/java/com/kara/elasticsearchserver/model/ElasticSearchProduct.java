@@ -16,8 +16,8 @@ import java.util.UUID;
 
 public class ElasticSearchProduct {
     @Id
-    @Field("id")
-    private UUID id;
+    @Field(value = "id",type = FieldType.Text)
+    private String id;
     @Field(value = "name", type = FieldType.Text)
     private String name;
     @Field(value = "description", type = FieldType.Text)
@@ -43,11 +43,11 @@ public class ElasticSearchProduct {
         return result;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

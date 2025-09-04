@@ -22,7 +22,7 @@ public class ProductConsumer {
     public void DebeziumListener(Message message) {
         ElasticSearchProduct elasticSearchProduct = new ElasticSearchProduct();
         // buraya id set edilecek
-        elasticSearchProduct.setId(message.getAfter().getId());
+        elasticSearchProduct.setId(message.getAfter().getId().toString());
         elasticSearchProduct.setName(message.getAfter().getName());
         elasticSearchProduct.setDescription(message.getAfter().getDescription());
         productRepository.save(elasticSearchProduct);
