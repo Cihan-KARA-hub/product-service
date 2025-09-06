@@ -4,6 +4,7 @@ import com.kara.productserver.dto.InventoryDto;
 import com.kara.productserver.dto.ProductGetDto;
 import com.kara.productserver.dto.UpdateProduct;
 import com.kara.productserver.entity.Category;
+import com.kara.productserver.entity.Inventory;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.entity.enumble.Status;
 import com.kara.productserver.mapper.GetProductMapper;
@@ -92,7 +93,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void updateInventories(UUID id, InventoryDto dto) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null) {
+            Inventory inventory = new Inventory();
+            inventory.setQuantity(dto.quantity());
+            inventory.setReserved(dto.reserved());
+            inventory.setAvailable(dto.available());
+            product.setInventory(inventory);
+            product.setInventory(inventory);
+            productRepository.save(product);
+            // publisher kafka
+
+        }
 
     }
 
