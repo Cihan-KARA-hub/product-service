@@ -1,6 +1,8 @@
 package com.kara.productserver.service;
 
+import com.kara.productserver.dto.InventoryDto;
 import com.kara.productserver.dto.ProductGetDto;
+import com.kara.productserver.dto.UpdateProduct;
 import com.kara.productserver.entity.Category;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.entity.enumble.Status;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.kara.productserver.mapper.GetProductMapper.map;
+import static com.kara.productserver.mapper.GetProductMapper.updateToProduct;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -46,9 +49,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct() {
-
+    @Transactional
+    public void updateProduct(UUID productId, UpdateProduct product) {
+        productRepository.findById(productId).orElseGet(
+                () -> {
+                    return productRepository.save(updateToProduct(product));
+                }
+        );
     }
+
 
     @Override
     @Transactional
@@ -80,6 +89,11 @@ public class ProductServiceImpl implements ProductService {
     public ProductGetDto findById(UUID id) {
         Optional<Product> entity = productRepository.findById(id);
         return entity.map(GetProductMapper::map).orElse(null);
+    }
+
+    @Override
+    public void updateInventories(UUID id, InventoryDto dto) {
+
     }
 
 

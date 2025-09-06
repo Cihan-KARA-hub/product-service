@@ -1,16 +1,17 @@
 package com.kara.productserver.controller;
 
 
+import com.kara.productserver.dto.InventoryDto;
 import com.kara.productserver.dto.ProductGetDto;
+import com.kara.productserver.dto.UpdateProduct;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.service.ProductService;
-
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +33,7 @@ public class ProductController {
         return productService.getPageProducts(pageable);
 
     }
+
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductGetDto> getFindAll() {
@@ -65,13 +67,28 @@ public class ProductController {
     public void createCategory(@PathVariable String name) {
         productService.addCategory(name);
     }
+
+    //PUT /api/v1/products/{id} - Mevcut bir ürünü güncelle
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void updateIdProduct(@PathVariable UUID id, @RequestBody UpdateProduct dto) {
+        productService.updateProduct(id, dto);
+    }
+    //PATCH /api/v1/products/{id}/inventories - Envanter seviyelerini güncelle
+
+    @PatchMapping("/{id}/inventories")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void updateInventories(@PathVariable UUID id , @RequestBody InventoryDto dto) {
+        productService.updateInventories(id,dto);
+    }
+
 }
 
 //TODO bunlar web soket ile halledilecek
-//PUT /api/v1/products/{id} - Mevcut bir ürünü güncelle
+
 //
 
-//PATCH /api/v1/products/{id}/inventories - Envanter seviyelerini güncelle
+
 
 
 
