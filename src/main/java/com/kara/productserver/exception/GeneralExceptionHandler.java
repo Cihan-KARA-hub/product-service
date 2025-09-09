@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -41,5 +42,11 @@ public class GeneralExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         ErrorResponse res = new ErrorResponse(LocalDateTime.now(), "Bad Request ", ex.getStackTrace().toString(), null);
         return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpClientErrorException.TooManyRequests.class)
+    public ResponseEntity<ErrorResponse> handleTooManyRequests(HttpClientErrorException ex) {
+        ErrorResponse res = new ErrorResponse(LocalDateTime.now(), "Race Limiting", ex.getStackTrace().toString(), 429);
+        return new ResponseEntity<>(res, HttpStatus.TOO_MANY_REQUESTS);
     }
 }

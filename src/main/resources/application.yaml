@@ -23,7 +23,10 @@ spring:
       platform: postgresql
   profiles:
     active: dev
-
+management:
+  endpoint:
+    health:
+      show-details: always
 
 server:
   port: 8081

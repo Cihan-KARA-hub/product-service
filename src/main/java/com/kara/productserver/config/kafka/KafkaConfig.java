@@ -1,4 +1,4 @@
-package com.kara.productserver.config;
+package com.kara.productserver.config.kafka;
 
 
 import com.kara.productserver.dto.InventoryKafka;
