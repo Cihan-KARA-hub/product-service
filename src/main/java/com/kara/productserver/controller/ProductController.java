@@ -1,11 +1,12 @@
 package com.kara.productserver.controller;
 
-
-import com.kara.productserver.dto.InventoryDto;
+import com.kara.productserver.dto.CreateProductDto;
+import com.kara.productserver.dto.InventoryKafka;
 import com.kara.productserver.dto.ProductGetDto;
 import com.kara.productserver.dto.UpdateProduct;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,14 +32,12 @@ public class ProductController {
                                               @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return productService.getPageProducts(pageable);
-
     }
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductGetDto> getFindAll() {
         return productService.getProducts();
-
     }
 
     //GET /api/v1/products/{id} - Kimliğe göre belirli bir ürünü al
@@ -51,10 +50,9 @@ public class ProductController {
     //POST /api/v1/products - Yeni bir ürün oluşturun
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createProduct(@RequestBody Product dto) {
+    public void createProduct(@Valid @RequestBody  CreateProductDto dto) {
         productService.createProduct(dto);
     }
-
     //DELETE /api/v1/products/{id} - Bir ürünü sil (yumuşak silme tercih edilir)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -71,22 +69,17 @@ public class ProductController {
     //PUT /api/v1/products/{id} - Mevcut bir ürünü güncelle
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateIdProduct(@PathVariable UUID id, @RequestBody UpdateProduct dto) {
+    public void updateIdProduct(@PathVariable UUID id,@Valid @RequestBody UpdateProduct dto) {
         productService.updateProduct(id, dto);
     }
     //PATCH /api/v1/products/{id}/inventories - Envanter seviyelerini güncelle
 
     @PatchMapping("/{id}/inventories")
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateInventories(@PathVariable UUID id , @RequestBody InventoryDto dto) {
+    public void updateInventories(@PathVariable UUID id ,@Valid @RequestBody InventoryKafka dto) {
         productService.updateInventories(id,dto);
     }
-
 }
-
-//TODO bunlar web soket ile halledilecek
-
-//
 
 
 

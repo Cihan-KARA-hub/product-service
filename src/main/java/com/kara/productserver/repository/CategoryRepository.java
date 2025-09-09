@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     //@Query("SELECET * FROM Cutomer c where c.id != id")
    // Optional<Category> findById(Long id);

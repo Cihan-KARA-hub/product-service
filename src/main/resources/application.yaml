@@ -25,22 +25,8 @@ spring:
     active: dev
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 server:
   port: 8081
-
 
 
 

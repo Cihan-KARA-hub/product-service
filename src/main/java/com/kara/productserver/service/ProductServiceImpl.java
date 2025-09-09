@@ -1,6 +1,7 @@
 package com.kara.productserver.service;
 
-import com.kara.productserver.dto.InventoryDto;
+import com.kara.productserver.dto.CreateProductDto;
+import com.kara.productserver.dto.InventoryKafka;
 import com.kara.productserver.dto.ProductGetDto;
 import com.kara.productserver.dto.UpdateProduct;
 import com.kara.productserver.entity.Category;
@@ -8,17 +9,15 @@ import com.kara.productserver.entity.Inventory;
 import com.kara.productserver.entity.Product;
 import com.kara.productserver.entity.enumble.Status;
 import com.kara.productserver.mapper.GetProductMapper;
-import com.kara.productserver.repository.CategoryRepository;
 import com.kara.productserver.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.kara.productserver.mapper.GetProductMapper.map;
 import static com.kara.productserver.mapper.GetProductMapper.updateToProduct;
@@ -26,39 +25,41 @@ import static com.kara.productserver.mapper.GetProductMapper.updateToProduct;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
     private final GetProductMapper getProductMapper;
+    private final KafkaTemplate<String, InventoryKafka> kafkaTemplate;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, GetProductMapper getProductMapper) {
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService,
+                              GetProductMapper getProductMapper,
+                              KafkaTemplate<String, InventoryKafka> kafkaTemplate) {
+
         this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
         this.getProductMapper = getProductMapper;
+        this.kafkaTemplate = kafkaTemplate;
     }
-
     @Override
-    public void createProduct(Product product) {
-        productRepository.save(product);
+    public void createProduct(CreateProductDto dto) {
+        Product product = getProductMapper.createProduct(dto);
+        if (product != null) {
+            productRepository.save(product);
+        }
     }
 
     @Override
     public void deleteProduct(UUID productId) {
-        Optional<Product> product = productRepository.findById(productId);
-        if (product.isPresent()) {
-            product.get().setStatus(Status.DELETE);
-            productRepository.save(product.get());
-        }
+        Product product = productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
+            product.setStatus(Status.DELETE);
+            productRepository.save(product);
     }
 
     @Override
     @Transactional
     public void updateProduct(UUID productId, UpdateProduct product) {
-        productRepository.findById(productId).orElseGet(
-                () -> {
-                    return productRepository.save(updateToProduct(product));
-                }
-        );
+        productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
+        productRepository.save(updateToProduct(product));
     }
-
 
     @Override
     @Transactional
@@ -75,15 +76,14 @@ public class ProductServiceImpl implements ProductService {
     public void addCategory(String name) {
         Category category = new Category();
         category.setName(name);
-        categoryRepository.save(category);
+        categoryService.saveCategory(category);
     }
 
     @Override
     @Transactional
     public Page<ProductGetDto> getPageProducts(Pageable pageable) {
         Page<Product> entityPage = productRepository.findAllProducts(pageable);
-        Page<ProductGetDto> dtoPage = entityPage.map(GetProductMapper::map);
-        return dtoPage;
+        return entityPage.map(GetProductMapper::map);
     }
 
     @Override
@@ -94,17 +94,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void updateInventories(UUID id, InventoryDto dto) {
-        Product product = productRepository.findById(id).orElse(null);
+    public void updateInventories(UUID id, InventoryKafka dto) {
+        Product product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
         if (product != null) {
             Inventory inventory = new Inventory();
-            inventory.setQuantity(dto.quantity());
-            inventory.setReserved(dto.reserved());
-            inventory.setAvailable(dto.available());
+            inventory.setQuantity(dto.getQuantity());
+            inventory.setReserved(dto.getReserved());
+            inventory.setAvailable(dto.getAvailable());
             product.setInventory(inventory);
             product.setInventory(inventory);
             productRepository.save(product);
             // publisher kafka
+            kafkaTemplate.send("prod.product.inventory.update", id.toString(), dto);
 
         }
 
