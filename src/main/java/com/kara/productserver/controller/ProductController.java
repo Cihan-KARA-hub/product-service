@@ -68,14 +68,14 @@ public class ProductController {
 
     //PUT /api/v1/products/{id} - Mevcut bir ürünü güncelle
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void updateIdProduct(@PathVariable UUID id,@Valid @RequestBody UpdateProduct dto) {
         productService.updateProduct(id, dto);
     }
     //PATCH /api/v1/products/{id}/inventories - Envanter seviyelerini güncelle
 
     @PatchMapping("/{id}/inventories")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void updateInventories(@PathVariable UUID id ,@Valid @RequestBody InventoryKafka dto) {
         productService.updateInventories(id,dto);
     }

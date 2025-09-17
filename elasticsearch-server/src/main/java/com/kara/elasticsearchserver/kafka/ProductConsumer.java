@@ -21,7 +21,6 @@ public class ProductConsumer {
     @KafkaListener(topics = "product.public.product", groupId = "product-group")
     public void DebeziumListener(Message message) {
         ElasticSearchProduct elasticSearchProduct = new ElasticSearchProduct();
-        // buraya id set edilecek
         elasticSearchProduct.setId(message.getAfter().getId().toString());
         elasticSearchProduct.setName(message.getAfter().getName());
         elasticSearchProduct.setDescription(message.getAfter().getDescription());

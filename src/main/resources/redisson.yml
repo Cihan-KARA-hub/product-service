@@ -1,0 +1,9 @@
+singleServerConfig:
+  address:  "redis://localhost:6379"
+  database: 0
+  password: null
+  timeout: 3000
+  connectTimeout: 10000
+  pingConnectionInterval: 1000 # Correct property for modern Redisson
+  retryAttempts: 3
+  retryInterval: 1500

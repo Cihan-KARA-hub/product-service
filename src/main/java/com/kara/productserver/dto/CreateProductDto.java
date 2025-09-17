@@ -4,6 +4,7 @@ import com.kara.productserver.entity.enumble.Status;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
@@ -16,11 +17,11 @@ public class CreateProductDto {
     @Min(value = 1, message = "price min 1.")
     @Positive(message = "price is positive")
     private BigDecimal price;
-    @NotBlank(message = "not Empty")
+    @NotNull
     private Integer categoryId;
     private String sku;
     private Status status = Status.DISABLED;
-    @Valid
+
     private InventoryDto inventory;
     @Valid
     private MetadataDto metadata;

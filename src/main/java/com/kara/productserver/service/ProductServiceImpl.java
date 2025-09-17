@@ -11,6 +11,8 @@ import com.kara.productserver.entity.enumble.Status;
 import com.kara.productserver.mapper.GetProductMapper;
 import com.kara.productserver.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -56,13 +58,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CachePut(value = "products", key = "#productId")
     public void updateProduct(UUID productId, UpdateProduct product) {
         productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
         productRepository.save(updateToProduct(product));
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProductGetDto> getProducts() {
         List<Product> product = productRepository.findAll();
         List<ProductGetDto> productGetDtos = new ArrayList<>();
@@ -73,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+
     public void addCategory(String name) {
         Category category = new Category();
         category.setName(name);
@@ -80,13 +84,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
+    @Cacheable(value = "itemPageProducts", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
     public Page<ProductGetDto> getPageProducts(Pageable pageable) {
         Page<Product> entityPage = productRepository.findAllProducts(pageable);
         return entityPage.map(GetProductMapper::map);
     }
 
     @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "products", key = "#id")
     public ProductGetDto findById(UUID id) {
         Optional<Product> entity = productRepository.findById(id);
         return entity.map(GetProductMapper::map).orElse(null);
@@ -94,6 +101,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CachePut(value = "products", key = "#id")
     public void updateInventories(UUID id, InventoryKafka dto) {
         Product product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
         if (product != null) {
